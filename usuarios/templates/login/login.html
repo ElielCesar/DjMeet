@@ -1,1 +1,28 @@
-<h1>Página de login</h1>
+{% extends 'bases/base.html' %}
+{% load static %}
+{% block 'head' %}
+    <link href="{% static 'usuarios/css/usuarios.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block 'body' %}
+
+    <div class="container-fluid bg-inscricao">
+        
+        <div class="row">
+            <div class="col-md">
+                <h3 class="logo">DjMeet</h3>
+
+                {% include 'partials/login/login.html' %}
+
+                <img src="{% static 'geral/img/logo_inferior.png' %}" class="logo-evento">
+
+            </div>
+
+            <div class="col-md bg-img">
+            
+            </div>
+        
+        </div>
+    </div>
+
+{% endblock %}
