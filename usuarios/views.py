@@ -10,7 +10,7 @@ from django.contrib import auth
 def login(request):
     if request.method == 'GET':
         return render(request, 'login/login.html')
-    
+
     if request.method == 'POST':
         user = request.POST.get('username')
         senha = request.POST.get('senha')
@@ -18,13 +18,19 @@ def login(request):
         user = auth.authenticate(username=user, password=senha)
 
         if not user:
-            messages.add_message(request, constants.ERROR, 'Usuário não existe no sistema')
+            messages.add_message(request, constants.ERROR,
+                                 'Usuário ou Senha incorretos')
             return redirect('/usuarios/login')
-        
+
         if user:
             auth.login(request, user)
             return redirect('/eventos/novo_evento/')
-            
+
+
+def logout(request):
+    if request.method == 'GET':
+        auth.logout(request)
+        return redirect('/usuarios/login')
 
 
 def cadastro(request):
@@ -39,7 +45,8 @@ def cadastro(request):
 
         # valida se senhas são iguais
         if not senha == confirmar_senha:
-            messages.add_message(request, constants.WARNING, 'as senhas digitadas não são iguais')
+            messages.add_message(request, constants.WARNING,
+                                 'as senhas digitadas não são iguais')
             return redirect('/usuarios/cadastro')
 
         # TODO: Criar funcao usando regex em um arquivo separado para validar forca da senha
@@ -48,7 +55,8 @@ def cadastro(request):
         user = User.objects.filter(username=usuario)
 
         if user.exists():
-            messages.add_message(request, constants.WARNING, 'O usuário já existe')
+            messages.add_message(
+                request, constants.WARNING, 'O usuário já existe')
             return redirect('/usuarios/cadastro')
 
         # se não existir, cria o usuario
@@ -56,5 +64,6 @@ def cadastro(request):
             user = User.objects.create_user(
                 username=usuario, email=email, password=senha)
 
-            messages.add_message(request, constants.SUCCESS, 'Usuário criado com sucesso!')
+            messages.add_message(request, constants.SUCCESS,
+                                 'Usuário criado com sucesso!')
             return redirect('/usuarios/cadastro')
