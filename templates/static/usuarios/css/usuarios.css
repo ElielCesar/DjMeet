@@ -22,10 +22,10 @@
     background-color: var(--main-color);
     margin: auto;
     padding: 40px;
-    margin-top: 4%;
+    margin-top: 2%;
     border-radius: 20px;
     box-shadow: 1px 1px 5px 1px #0e0e0e;
-    height: 70vh;
+    height: 85vh;
 }
 
 .link{
