@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Evento
 from django.contrib import messages
 from django.contrib.messages import constants
-
-# Create your views here.
+# libs para gerar csv
+import csv
 
 
 @login_required(login_url='/usuarios/login')
@@ -43,6 +43,7 @@ def novo_evento(request):
         return redirect('/eventos/novo_evento')
 
 
+@login_required(login_url='/usuarios/login')
 def gerenciar_evento(request):
     if request.method == 'GET':
         titulo = request.GET.get('nome')
@@ -50,12 +51,51 @@ def gerenciar_evento(request):
 
         if titulo:
             eventos = eventos.filter(nome__contains=titulo)
-        
+
         return render(request, 'gerenciar_evento.html', {'eventos': eventos})
 
+
+@login_required(login_url='/usuarios/login')
 def inscrever_evento(request, id):
-    # TODO: validar login
     evento = get_object_or_404(Evento, id=id)
     if request.method == 'GET':
-        return HttpResponse(evento.nome)
-    
+        return render(request, 'inscrever_evento.html', {'evento': evento})
+
+    elif request.method == 'POST':
+        # TODO: validar no backend se o usuário já é um participante
+        evento.participantes.add(request.user)
+        evento.save()
+
+        messages.add_message(request, constants.SUCCESS,
+                             'Inscricao realizada com sucesso!')
+        return redirect(f'/eventos/inscrever_evento/{evento.id}/')
+
+
+def participantes_evento(request, id):
+    evento = get_object_or_404(Evento, id=id)
+    if request.method == 'GET':
+        if evento.criador == request.user:
+            participantes = evento.participantes.all()
+            return render(request, 'participantes_evento.html', {'participantes': participantes, 'evento': evento})
+        else:
+            messages.add_message(request, constants.ERROR,
+                                 'Esse evento não é seu.')
+            return render(request, 'gerenciar_evento.html')
+
+
+def gerar_csv(request, id):
+    evento = get_object_or_404(Evento, id=id)
+    if request.method == 'GET':
+        if not evento.criador == request.user:
+            messages.add_message(request, constants.ERROR,
+                                 'Esse evento não é seu.')
+            return render(request, 'gerenciar_evento.html')
+
+        participantes = evento.participantes.values_list('username', 'email')
+        resposta = HttpResponse(content_type='text/csv')
+        resposta['Content-Disposition'] = 'attachment; filename="participantes.csv"'
+
+        escritor = csv.writer(resposta)
+        [escritor.writerow(participante) for participante in participantes]
+            
+        return resposta
