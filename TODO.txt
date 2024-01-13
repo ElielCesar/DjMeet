@@ -1,0 +1,21 @@
+Melhorias a serem feitas:
+
+1 - Remover cor do evento e colocar quantidade de vagas disponiveis
+
+2 - Permitir Delete e update do evento 
+
+3 - Finalizar os testes de interface
+
+4 - Fazer testes unitários
+
+5 - Organizar os certificados por pasta do evento
+
+6 - Refatorar as views para clean code
+
+7 - Terminar o readme.md no github
+
+8 - Diagramar o sistema
+
+9 - adicionar um icone de copiar no link de inscricao para facilitar para o usuario
+
+10 - 

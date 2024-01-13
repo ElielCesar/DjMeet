@@ -12,7 +12,7 @@
 {% block 'body' %}
     <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-color" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">DjMeet</a>
+            <a class="navbar-brand" href="{% url 'login'%}">DjMeet</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -38,7 +38,7 @@
                     </ul>
                 </li>
             </ul>
-            <a class="navbar-brand ms-3" href="/usuarios/logout">Validar Certificado</a>
+            <a class="navbar-brand ms-3" href="{% url 'validar_certificado'%}">Validar Certificado</a>
             {% if user.is_authenticated %}
                 <a class="navbar ms-3 text-white" style="text-decoration: none;" href="/usuarios/logout">Sair</a>
             {% endif %}
