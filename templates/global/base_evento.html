@@ -1,0 +1,58 @@
+{% extends 'global/base.html' %}
+{% load static %}
+
+{% block 'head' %}
+
+    {% block 'importacoes' %}{% endblock %}
+    <link href="{% static 'eventos/css/eventos.css' %}" rel="stylesheet">
+    <link href="{% static 'usuarios/css/usuarios.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block 'body' %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-color" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">DjMeet</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Evento
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/eventos/novo_evento">Criar novo evento</a></li>
+                        <li><a class="dropdown-item" href="/eventos/gerenciar_evento">Gerenciar eventos</a></li>
+                    </ul>
+                </li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Participante
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/eventos/meus_eventos">Meus eventos</a></li>
+                        <li><a class="dropdown-item" href="{% url 'meus_certificados' %}">Meus certificados</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <a class="navbar-brand ms-3" href="/usuarios/logout">Validar Certificado</a>
+            {% if user.is_authenticated %}
+                <a class="navbar ms-3 text-white" style="text-decoration: none;" href="/usuarios/logout">Sair</a>
+            {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div style="min-height: 60vh">
+        {% block 'conteudo' %}
+
+        {% endblock %}
+    </div>
+
+    <div class="fundo-pagina">
+        
+    </div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "global/base_evento.html" %}
+{% load static %}
+
+{% block 'importacoes' %}
+    <link href="{% static 'eventos/css/gerenciar_evento.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block 'conteudo' %}
+    <div class="container">
+        <br>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <br>
+        
+        <div class="row">
+            <h5>Procurar certificado</h5>
+            <br>
+            <form action="{% url 'validar_certificado' %}" method="POST">
+                {% csrf_token %}
+                <input type="text" class="form-control" placeholder="Digite o código do certificado" name="cert_id">
+                <br>
+                <input type="submit" value="BUSCAR" class="btn btn-primary">
+            </form>
+        </div> 
+    </div>
+
+{% endblock %}

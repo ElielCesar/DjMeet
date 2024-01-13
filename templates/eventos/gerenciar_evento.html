@@ -1,0 +1,61 @@
+{% extends "global/base_evento.html" %}
+{% load static %}
+
+{% block 'importacoes' %}
+<link href="{% static 'eventos/css/gerenciar_evento.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block 'conteudo' %}
+<div class="container">
+    <br>
+    <div class="row">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        <div class="col-md">
+            <form action="{% url 'gerenciar_evento' %}" method="get">
+                {% csrf_token %}
+                <label>Título:</label>
+                <input type="text" placeholder="Título..." class="form-control" name="nome">
+        </div>
+
+        <div class="col-md">
+            <br>
+            <input type="submit" class="btn-principal" value="filtrar">
+            </form>
+        </div>
+
+    </div>
+    <table>
+        <tr>
+            <th>Logo</th>
+            <th>Título</th>
+            <th>Link de inscrição</th>
+            <th>Participantes</th>
+            <th>Início</th>
+            <th>Término</th>
+
+        </tr>
+        {% for evento in eventos %}
+        <tr class="{% cycle 'linha' 'linha2' %}">
+            <td width="10%"><a href="{% url 'participantes_evento' evento.id %}"><img width="100%"
+                        src="/media/{{evento.logo}}"></a></td>
+            <td>{{evento.nome}}</td>
+            <td> <a href="{% url 'inscrever_evento' evento.id %}" a style="text-decoration: none;">Link de inscrição</a>
+            </td>
+            <td><a style="text-decoration: none;" href="{% url 'participantes_evento' evento.id %}">Lista de
+                    Participantes</a></td>
+            </td>
+            <td>{{evento.data_inicio}}</td>
+            <td>{{evento.data_fim}}</td>
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</div>
+
+{% endblock %}
