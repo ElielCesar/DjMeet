@@ -123,13 +123,13 @@ def certificados_evento(request, id):
     participantes_usernames = [username for username,
                                in evento.participantes.values_list('username')]
 
-    if not request.user.username in participantes_usernames:
+    if request.user != evento.criador and request.user.username not in participantes_usernames:
         messages.add_message(request, constants.WARNING,
                              'Você não se inscreveu nesse evento!')
         return redirect('participantes_evento', id=id)
 
     # visivel para o criador do evento
-    if request.method == "GET":
+    if request.method == "GET" :
         qtd_certificados = evento.participantes.all().count(
         ) - Certificado.objects.filter(evento=evento).count()
         return render(request, 'eventos/certificados_evento.html', {'evento': evento, 'qtd_certificados': qtd_certificados})

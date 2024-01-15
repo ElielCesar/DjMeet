@@ -2,13 +2,14 @@ Melhorias a serem feitas:
 
 1 - Remover cor do evento e colocar quantidade de vagas disponiveis
 
-2 - Permitir Delete e update do evento 
+2 - Permitir Delete e update do evento
+OBS: após gerar os certificados, o evento não pode mais ser editado. 
 
-3 - Finalizar os testes de interface
+3 - Finalizar os testes de interface -- FEITO!
 
 4 - Fazer testes unitários
 
-5 - Organizar os certificados por pasta do evento
+5 - Organizar os certificados por pasta do evento - FEITO!!
 
 6 - Refatorar as views para clean code
 
@@ -16,6 +17,6 @@ Melhorias a serem feitas:
 
 8 - Diagramar o sistema
 
-9 - adicionar um icone de copiar no link de inscricao para facilitar para o usuario
+9 - adicionar um icone de copiar no link de inscricao para facilitar para o usuario - FEITO!! 
 
 10 - 

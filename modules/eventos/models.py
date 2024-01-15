@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import os
 
 # Create your models here.
 
@@ -21,9 +22,16 @@ class Evento(models.Model):
     def __str__(self):
         return self.nome
 
-
+def pasta_certificado_evento(instance, filename):
+    
+    subpasta = f'certificados/evento{instance.evento.id}'
+    caminho_arquivo = os.path.join(subpasta, filename)
+    return caminho_arquivo
+    
 class Certificado(models.Model):
-    certificado = models.ImageField(upload_to='certificados')
+    
+    certificado = models.ImageField(upload_to=pasta_certificado_evento)
     participante = models.ForeignKey(User, on_delete=models.CASCADE)
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='certificados')
     certificado_id = models.CharField(max_length=10, unique=True)
+    
