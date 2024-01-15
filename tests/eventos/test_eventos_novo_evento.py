@@ -1,5 +1,7 @@
 '''
 Esperado: Cadastrar 3 eventos com sucesso!
+OBS: Esse teste terá de ser refatorado quando o campo
+número de vagas for incrementado.
 '''
 
 from selenium import webdriver

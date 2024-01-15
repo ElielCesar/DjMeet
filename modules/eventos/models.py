@@ -24,6 +24,6 @@ class Evento(models.Model):
 
 class Certificado(models.Model):
     certificado = models.ImageField(upload_to='certificados')
-    participante = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    evento = models.ForeignKey(Evento, on_delete=models.DO_NOTHING, related_name='certificados')
+    participante = models.ForeignKey(User, on_delete=models.CASCADE)
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='certificados')
     certificado_id = models.CharField(max_length=10, unique=True)
