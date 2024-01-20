@@ -33,6 +33,22 @@ def novo_evento(request):
         cor_principal = request.POST.get('cor_principal')
         cor_secundaria = request.POST.get('cor_secundaria')
         cor_fundo = request.POST.get('cor_fundo')
+        
+        if len(nome) < 5 or len(descricao) < 5:
+            messages.add_message(request, constants.WARNING, 'Os campos nome e descricão devem ter no mínimo 5 caracteres.')
+            return redirect('/eventos/novo_evento')
+        
+        if len(data_inicio) < 8 or len(data_fim) < 8:
+            messages.add_message(request, constants.WARNING, 'Valor icorreto nos campos de data')
+            return redirect('/eventos/novo_evento')
+        
+        if data_inicio == None or data_fim == None:
+            messages.add_message(request, constants.WARNING, 'Valor icorreto nos campos de data')
+            return redirect('/eventos/novo_evento')
+        
+        if carga_horaria == None or len(str(carga_horaria)) < 1 or int(carga_horaria) < 1:
+            messages.add_message(request, constants.WARNING, 'A carga horária tem que ser maior que 0')
+            return redirect('/eventos/novo_evento')
 
         evento = Evento(
             criador=request.user,
@@ -46,6 +62,7 @@ def novo_evento(request):
             cor_secundaria=cor_secundaria,
             cor_fundo=cor_fundo,
         )
+        
 
         evento.save()
 
@@ -220,7 +237,7 @@ def meus_certificados(request):
     return render(request, 'eventos/meus_certificados.html', {'certificados':certificados})
 
 
-# essa parte tem que ficar pública para que o certificado seja validado
+# Esta view deve ser pública para que o certificado seja validado
 def validar_certificado(request):
     
     if request.method == 'GET':

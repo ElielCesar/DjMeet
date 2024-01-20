@@ -14,27 +14,27 @@
             <h3>Novo evento</h3>
             <form action="{% url 'novo_evento' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
                 <label>Nome evento</label>
-                <input type="text" name="nome" class="form-control" placeholder="Nome...">
+                <input type="text" name="nome" class="form-control" placeholder="Nome..." required>
                 <br>
                 <label>Descrição</label>
-                <textarea name="descricao" class="form-control" placeholder="Descrição..."></textarea>
+                <textarea name="descricao" class="form-control" placeholder="Descrição..." required></textarea>
                 <br>
                 <div class="row">
                     <div class="col-md">
                         <label>Data início</label>
-                        <input type="date" name="data_inicio" class="form-control">
+                        <input type="date" name="data_inicio" class="form-control" required>
                     </div>
                     <div class="col-md">
                         <label>Data término</label>
-                        <input type="date" name="data_termino" class="form-control">
+                        <input type="date" name="data_termino" class="form-control" required>
                     </div>
                 </div>
                 <br>
                 <label>Carga horária (em horas)</label>
-                <input type="number" name="carga_horaria" class="form-control" placeholder="X horas">
+                <input type="number" name="carga_horaria" class="form-control" placeholder="X horas" required>
                 <br>
                 <label>Logo do evento</label>
-                <input type="file" name="logo" class="form-control">
+                <input type="file" name="logo" class="form-control" required>
 
         </div>
 

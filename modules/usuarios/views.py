@@ -8,7 +8,7 @@ from .utils import validar_senha, validar_tamanho_campos, criar_usuario_banco
 
 # Create your views here.
 
-
+# testada
 def login(request):
     if request.method == 'GET':
         return render(request, 'usuarios/login.html')

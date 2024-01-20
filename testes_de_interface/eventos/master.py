@@ -4,9 +4,9 @@ import os
 def executar_scripts():
     # Lista dos scripts a serem executados
     scripts = [
-        'test_eventos_novo_evento.py',
-        'test_eventos_filtro.py',
-        'test_eventos_inscrever_usuarios.py',
+        'test_novo_evento.py',
+        'test_filtro_pesquisa.py',
+        'test_inscrever_usuarios.py',
     ]
 
     diretorio_atual = os.path.dirname(os.path.abspath(__file__))
