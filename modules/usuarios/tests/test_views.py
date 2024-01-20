@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from modules.usuarios.models import UserProfile
+from django.contrib.messages import get_messages
 
 
 class Base_Test_Config(TestCase):
@@ -35,27 +36,28 @@ class Login_View_Test(Base_Test_Config):
         self.assertTemplateUsed(resposta, 'usuarios/login.html')
       
       
-    def test_login_sucesso(self):
+    def test_login_post_sucesso(self):
         self.client.logout()
-        self.client.login(username=self.username, senha=self.password)
-        resposta = self.client.get(self.url_novo_evento, follow=True)
+        resposta = self.client.post(reverse('login'), {
+            'username':self.username, 'senha':self.password}, follow=True)
+       
+        self.assertEqual(resposta.status_code, 200)
+        self.assertTrue('/eventos/novo_evento/' in resposta.redirect_chain[0][0])
+        self.assertTrue(resposta.wsgi_request.user.is_authenticated)
+        
+
+    def test_login_post_falha(self):
+        self.client.logout()
+        resposta = self.client.post(reverse('login'), {
+            'username':self.username, 'senha':'aaa'}, follow=True)
+        
+        mensagens = list(get_messages(resposta.wsgi_request))
         
         self.assertEqual(resposta.status_code, 200)
-        self.assertTrue(self.url_novo_evento in resposta.redirect_chain[0][0])
+        self.assertTrue('/usuarios/login' in resposta.redirect_chain[0][0])
+        self.assertIn('Usuário ou Senha incorretos', [str(mensagem) for mensagem in mensagens])
+        self.assertFalse(resposta.wsgi_request.user.is_authenticated)
         
-
-    def test_login_falha(self):
-        self.client.logout()
-        login = self.client.login(username=self.username, password='aaaa')
-        resposta = self.client.get(reverse('novo_evento'))
-        
-        self.assertFalse(login)
-        self.assertEqual(resposta.status_code, 302)
-        self.assertTrue('_auth_user_id' not in self.client.session)
-        self.assertTrue(resposta['Location'].startswith(self.url_login))
-        
-        
-
 class Logout_View_Test(Base_Test_Config):
         
     def test_logout_get(self):
