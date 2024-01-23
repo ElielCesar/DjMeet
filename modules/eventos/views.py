@@ -110,7 +110,7 @@ def participantes_evento(request, id):
         else:
             messages.add_message(request, constants.ERROR,
                                  'Esse evento não é seu.')
-            return render(request, 'gerenciar_evento.html')
+            return redirect('/eventos/gerenciar_evento/')
 
 
 @login_required(login_url='/usuarios/login')
@@ -219,7 +219,7 @@ def procurar_certificado(request, id):
     
     if request.user != evento.criador:
         messages.add_message(request, constants.WARNING,'Você não ter permissão para acessar esse evento!')
-        return redirect(f'/eventos/certificados_evento/{id}')
+        return redirect('gerenciar_evento')
     
     email = request.POST.get('email')
     certificado = Certificado.objects.filter(evento=evento).filter(participante__email=email).first()
