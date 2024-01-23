@@ -22,78 +22,92 @@ class Base_Test_Config(TestCase):
             'estado': 'RO'
         }
         
-        self.url_login = '/usuarios/login'
-        self.url_cadastro = '/usuarios/cadastro'
-        self.url_novo_evento = '/eventos/novo_evento/'
+    def tearDown(self):
+        self.client.logout()
 
 
 class Login_View_Test(Base_Test_Config):
     
     def test_login_get(self):
-        self.client.logout()
-        resposta = self.client.get(reverse('login')) 
+        self.url = reverse('login')
+        self.template_esperado = 'usuarios/login.html'
+        
+        resposta = self.client.get(self.url)
+        
         self.assertEqual(resposta.status_code, 200)
-        self.assertTemplateUsed(resposta, 'usuarios/login.html')
+        self.assertTemplateUsed(resposta, self.template_esperado)
       
       
     def test_login_post_sucesso(self):
-        self.client.logout()
-        resposta = self.client.post(reverse('login'), {
-            'username':self.username, 'senha':self.password}, follow=True)
+        self.url = reverse('login')
+        self.dados = {'username':self.username, 'senha':self.password}
+        self.redirect_esperado = '/eventos/novo_evento/'
+        
+        resposta = self.client.post(self.url, self.dados, follow=True)
        
         self.assertEqual(resposta.status_code, 200)
-        self.assertTrue('/eventos/novo_evento/' in resposta.redirect_chain[0][0])
+        self.assertTrue(self.redirect_esperado in resposta.redirect_chain[0][0])
         self.assertTrue(resposta.wsgi_request.user.is_authenticated)
         
 
     def test_login_post_falha(self):
-        self.client.logout()
-        resposta = self.client.post(reverse('login'), {
-            'username':self.username, 'senha':'aaa'}, follow=True)
+        self.url = reverse('login')
+        self.dados = {'username':self.username, 'senha':'aaa'}
+        self.msg_esperada = 'Usuário ou Senha incorretos'
+        self.redirect_esperado = '/usuarios/login'
         
+        resposta = self.client.post(self.url, self.dados, follow=True)
         mensagens = list(get_messages(resposta.wsgi_request))
         
         self.assertEqual(resposta.status_code, 200)
-        self.assertTrue('/usuarios/login' in resposta.redirect_chain[0][0])
-        self.assertIn('Usuário ou Senha incorretos', [str(mensagem) for mensagem in mensagens])
+        self.assertTrue(self.redirect_esperado in resposta.redirect_chain[0][0])
+        self.assertIn(self.msg_esperada, [str(msg) for msg in mensagens])
         self.assertFalse(resposta.wsgi_request.user.is_authenticated)
         
 class Logout_View_Test(Base_Test_Config):
         
     def test_logout_get(self):
-        self.client.logout()
+        self.url = reverse('logout')
+        self.redirect_esperado = reverse('login')
+       
         self.client.login(username=self.username, password=self.password) 
-        resposta = self.client.get(reverse('logout'))
+        resposta = self.client.get(self.url, follow=True)
         user = resposta.wsgi_request.user
         
-        self.assertEqual(resposta.status_code, 302)
+        self.assertEqual(resposta.status_code, 200)
         self.assertFalse(user.is_authenticated)
-        self.assertTrue(resposta['Location'].startswith(self.url_login))
+        self.assertRedirects(resposta, self.redirect_esperado)
         
         
 class Cadastro_View_Test(Base_Test_Config): 
          
     def test_cadastro_get(self):
-        resposta = self.client.get(reverse('cadastro'))
-        self.assertEqual(resposta.status_code, 200)
-        self.assertTemplateUsed(resposta, 'usuarios/cadastro.html')
+        self.url = reverse('cadastro')
+        self.template_esperado = 'usuarios/cadastro.html'
         
+        resposta = self.client.get(self.url)
+        
+        self.assertEqual(resposta.status_code, 200)
+        self.assertTemplateUsed(resposta, self.template_esperado)
         
     def test_cadastro_post_sucesso(self):
-        resposta = self.client.post(reverse('cadastro'), self.dados)
-        self.assertEqual(resposta.status_code, 302)
+        self.url = reverse('cadastro')
+        self.redirect_esperado = reverse('cadastro')
+        
+        resposta = self.client.post(self.url, self.dados, follow=True)
+        
         self.assertTrue(User.objects.filter(username='testcase').exists())
         self.assertTrue(UserProfile.objects.filter(user__username='testcase').exists())
-        self.assertTrue(resposta['Location'].startswith(self.url_cadastro))
-        
-        
+        self.assertRedirects(resposta, self.redirect_esperado)
         
     def test_cadastro_post_falha(self):
-        dados_invalidos = {
-            'username': 'userfalha',
-            # Campos omitidos para simular dados inválidos
-        }
-        resposta = self.client.post(reverse('cadastro'), dados_invalidos)
-        self.assertEqual(resposta.status_code, 302) 
+        self.url = reverse('cadastro')
+        self.redirect_esperado = reverse('cadastro')
+        dados_invalidos = {'username': 'userfalha', }
+        # Campos omitidos para simular dados inválidos
+        
+        resposta = self.client.post(self.url, dados_invalidos, follow=True)
+        
+        self.assertEqual(resposta.status_code, 200) 
         self.assertFalse(User.objects.filter(username='userfalha').exists())
-        self.assertTrue(resposta['Location'].startswith(self.url_cadastro))
+        self.assertRedirects(resposta, self.redirect_esperado)

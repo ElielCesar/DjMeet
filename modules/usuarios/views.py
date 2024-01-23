@@ -32,7 +32,7 @@ def login(request):
 def logout(request):
     if request.method == 'GET':
         auth.logout(request)
-        return redirect('/usuarios/login')
+        return redirect('login')
 
 
 def cadastro(request):

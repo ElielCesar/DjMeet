@@ -23,7 +23,7 @@
                     <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{evento.nome}}</h5>
                     <p class="card-text">{{evento.descricao}}</p>
-                    <a href="{% url 'certificados_evento' evento.id %}" class="btn btn-outline-primary w-100 mt-auto">Buscar Certificado</a>
+                    <a href="{% url 'meus_certificados' %}" class="btn btn-outline-primary w-100 mt-auto">Buscar Certificado</a>
                     </div>
                 </div>
             {% endfor %}

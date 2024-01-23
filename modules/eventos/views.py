@@ -151,7 +151,6 @@ def certificados_evento(request, id):
         ) - Certificado.objects.filter(evento=evento).count()
         return render(request, 'eventos/certificados_evento.html', {'evento': evento, 'qtd_certificados': qtd_certificados})
 
-
 # gerador de id randomico para o certificado
 def gerar_id(tamanho=10):
     caracteres = string.ascii_lowercase + string.digits
@@ -218,7 +217,7 @@ def procurar_certificado(request, id):
     evento = get_object_or_404(Evento, id=id)
     
     if request.user != evento.criador:
-        messages.add_message(request, constants.WARNING,'Você não ter permissão para acessar esse evento!')
+        messages.add_message(request, constants.WARNING,'Acesse seus certificados pelo menu Participantes > Meus Certificados')
         return redirect('gerenciar_evento')
     
     email = request.POST.get('email')
@@ -229,7 +228,6 @@ def procurar_certificado(request, id):
         return redirect(f'/eventos/certificados_evento/{id}')
     
     return redirect(certificado.certificado.url)
-
 
 @login_required(login_url='/usuarios/login')
 def meus_certificados(request):
