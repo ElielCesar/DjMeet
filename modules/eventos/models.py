@@ -6,7 +6,7 @@ import os
 
 class Evento(models.Model):
     criador = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    nome = models.CharField(max_length=200, unique=True, blank=False, null=False)
+    nome = models.CharField(max_length=200, blank=False, null=False)
     descricao = models.TextField(max_length=500)
     data_inicio = models.DateField()
     data_fim = models.DateField()

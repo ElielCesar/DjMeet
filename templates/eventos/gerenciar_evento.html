@@ -47,10 +47,11 @@
             <td>{{evento.nome}}</td>
 
             <td>
-                <a href="{% url 'inscrever_evento' evento.id %}" 
-                    id={{evento.id}} style="text-decoration: none;">Link de inscrição
+                <a href="{% url 'inscrever_evento' evento.id %}" id={{evento.id}} style="text-decoration: none;">Link de
+                    inscrição
                 </a>
-                <button class="btn btn-dark" onclick="copiarLink('{{evento.id}}')"><i class="bi bi-clipboard"></i></button>
+                <button class="btn btn-dark" onclick="copiarLink('{{evento.id}}')"><i
+                        class="bi bi-clipboard"></i></button>
             </td>
 
             <td><a style="text-decoration: none;" href="{% url 'participantes_evento' evento.id %}">Lista de
@@ -58,8 +59,45 @@
             </td>
             <td>{{evento.data_inicio}}</td>
             <td>{{evento.data_fim}}</td>
-            <td><a class="text-white" href=""><i class="bi bi-pencil-fill"></i></a></td>
-            <td><a class="text-white" href=""><i class="bi bi-trash3-fill"></i></a></td>
+            <td>
+                <button type="button" class="btn btn-primary">
+                    <a href="{% url 'editar_evento' evento.id %}" style="text-decoration: none; color:white">
+                        <i class="bi bi-pencil-fill"></i>&nbsp;Editar
+                    </a>
+                </button>
+            </td>
+
+
+            <td>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{evento.id}}">
+                    <i class="bi bi-trash3-fill"></i>&nbsp;Deletar
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal{{evento.id}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5 text-dark" id="{{evento.id}}">Deletar Evento</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h5 class="text-dark">Tem certeza que deseja deletar o evento: {{evento.nome}} ?</h5>
+                                <p class="text-black">Os certificados e a lista de membros também serão apagados.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                                <button type="button" class="btn btn-danger">
+                                    <a href="{% url 'deletar_evento' evento.id %}" style="text-decoration: none; color:white">Deletar</a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
 
         </tr>
         {% endfor %}
@@ -69,8 +107,11 @@
         function copiarLink(elementId) {
             var link = document.getElementById(elementId).href;
             navigator.clipboard.writeText(link)
-            alert("Link copiado"); 
+            alert("Link copiado");
         }
+    </script>
+    <script>
+
     </script>
 
 </div>

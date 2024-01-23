@@ -212,7 +212,7 @@ class Base_Teste_Config_2(TestCase):
         self.participante = 'participante'
         self.participante2 = 'participante2'
 
-        self.user = User.objects.create_user(
+        self.criador = User.objects.create_user(
             username=self.criador, password=self.senha)
         self.part = User.objects.create_user(
             username=self.participante, password=self.senha)
@@ -228,7 +228,7 @@ class Base_Teste_Config_2(TestCase):
 
         # cria um evento para testar a inscricao
         self.eventox = Evento.objects.create(
-            criador=self.user,
+            criador=self.criador,
             nome='testcase e pytest',
             descricao='evento de teste',
             data_inicio='20240613',
@@ -409,3 +409,56 @@ class Certificados_View_Test(Base_Teste_Config_2):
         self.assertEqual(resp.status_code, 200)
         self.assertRedirects(resp, f'/eventos/gerenciar_evento/')
         self.assertEqual(self.msg_esperada, str(mensagem[0]))
+
+
+class Deletar_Evento_View_Test(Base_Teste_Config_2):
+    def test_deletar_evento_falha(self):
+        self.url = reverse('deletar_evento', args=[self.eventox.id])
+        self.redirect_esperado = reverse('gerenciar_evento')
+        self.msg_esperada = 'Esse evento não é seu.'
+        
+        self.client.login(username=self.participante2, password=self.senha)
+        resp = self.client.get(self.url, follow=True)
+        mensagem = list(resp.context['messages'])
+        
+        self.assertRedirects(resp, self.redirect_esperado)
+        self.assertEqual(self.msg_esperada, str(mensagem[0]))
+    
+    def test_deletar_evento_sucesso(self):
+        self.nome_evento = 'testcase e pytest'
+        self.url = reverse('deletar_evento', args=[self.eventox.id])
+        self.redirect_esperado = reverse('gerenciar_evento')
+        self.msg_esperada = 'Evento deletado com sucesso'
+        
+        self.client.login(username=self.criador, password=self.senha)
+        resp = self.client.get(self.url, follow=True)
+        mensagem = list(resp.context['messages'])
+        
+        self.assertRedirects(resp, self.redirect_esperado)
+        self.assertEqual(self.msg_esperada, str(mensagem[0]))
+        self.assertFalse(Evento.objects.filter(nome=self.nome_evento).exists())
+
+
+class Editar_Evento_View_Test(Base_Teste_Config_2):
+    def test_usuario_nao_autorizado(self):
+        self.url = reverse('editar_evento', args=[self.eventox.id])
+        self.redirect_esperado = reverse('gerenciar_evento')
+        self.msg_esperada = 'Esse evento não é seu.'
+        
+        self.client.login(username=self.participante2, password=self.senha)
+        resp = self.client.get(self.url, follow=True)
+        mensagem = list(resp.context['messages'])
+        
+        self.assertRedirects(resp, self.redirect_esperado)
+        self.assertEqual(self.msg_esperada, str(mensagem[0]))
+    
+    def test_simples_usuario_autorizado(self):
+        self.url = reverse('editar_evento', args=[self.eventox.id])
+        self.template_esperado = 'eventos/editar_evento.html'
+        
+        self.client.login(username=self.criador, password=self.senha)
+        resp = self.client.get(self.url, follow=True)
+
+        self.assertTemplateUsed(resp, self.template_esperado)
+        self.assertIn('evento', resp.context)
+            

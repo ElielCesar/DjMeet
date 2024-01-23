@@ -11,8 +11,8 @@
                 {% endfor %}
             {% endif %}
             <br>
-            <h3>Novo evento</h3>
-            <form action="{% url 'novo_evento' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+            <h3>Editar evento</h3>
+            <form action="{% url 'editar_evento' evento.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
                 <label>Nome evento</label>
                 <input type="text" name="nome" value="{{evento.nome|default_if_none:''}}" class="form-control" placeholder="Nome..." required>
                 <br>
@@ -52,7 +52,7 @@
             <input type="color" name="cor_fundo" value="#020202"> <span>Cor de fundo</span>
             <br>
             <br>
-            <input type="submit" class="btn-principal" value="Criar evento">
+            <input type="submit" class="btn-principal" value="Editar evento">
             </form>
         </div>
     </div>

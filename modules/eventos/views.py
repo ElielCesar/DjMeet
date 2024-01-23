@@ -251,3 +251,58 @@ def validar_certificado(request):
             return redirect('validar_certificado')
         
         return redirect(certificado.certificado.url)
+   
+    
+@login_required(login_url='/usuarios/login')
+def deletar_evento(request, id):
+    evento = get_object_or_404(Evento, id=id)
+    
+    # condicional de seguranca
+    if request.user != evento.criador:
+        messages.add_message(request, constants.SUCCESS, 'Esse evento não é seu.')
+        return redirect('gerenciar_evento')
+    
+    if request.method == 'GET':
+            evento.delete()
+            messages.add_message(request, constants.SUCCESS, 'Evento deletado com sucesso')
+            return redirect('gerenciar_evento')
+        
+    return redirect('gerenciar_evento')
+
+@login_required(login_url='/usuarios/login')
+def editar_evento(request, id):
+    evento = get_object_or_404(Evento, id=id)
+    
+    # condicional de seguranca - deve ficar no topo
+    if request.user != evento.criador:
+        messages.add_message(request, constants.ERROR, 'Esse evento não é seu.')
+        return redirect('gerenciar_evento')
+    
+    if request.method == 'GET':
+        return render(request, 'eventos/editar_evento.html', {'evento':evento})
+        
+    elif request.method == 'POST':
+        nome = request.POST.get('nome')
+        descricao = request.POST.get('descricao')
+        data_inicio = request.POST.get('data_inicio')
+        data_fim = request.POST.get('data_termino')
+        carga_horaria = request.POST.get('carga_horaria')
+        logo_evento = request.FILES.get('logo')
+        cor_principal = request.POST.get('cor_principal')
+        cor_secundaria = request.POST.get('cor_secundaria')
+        cor_fundo = request.POST.get('cor_fundo')
+
+        # Atualizar os campos do evento
+        evento.nome = nome
+        evento.descricao = descricao
+        evento.data_inicio = data_inicio
+        evento.data_fim = data_fim
+        evento.carga_horaria = carga_horaria
+        evento.logo = logo_evento
+        evento.cor_principal = cor_principal
+        evento.cor_secundaria = cor_secundaria
+        evento.cor_fundo = cor_fundo
+        
+        evento.save()
+        messages.add_message(request, constants.SUCCESS, 'Evento atualizado com sucesso!')
+        return redirect('gerenciar_evento')
